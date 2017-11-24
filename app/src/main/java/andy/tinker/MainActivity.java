@@ -11,6 +11,8 @@ import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import java.io.File;
 
+import hotfix.andy.com.library.Utils;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private TextView tv;
     @Override
@@ -19,7 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         tv = (TextView) findViewById(R.id.tv);
-    //热修复测试代码
+        tv.setText(Utils.getTextContent());
+        //热修复测试代码  不添加调用onClick
 //        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
