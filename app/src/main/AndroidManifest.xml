@@ -21,9 +21,9 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="TINKER_ID"
-            android:value="tinker_id_6235657" />
+        <service
+            android:name=".service.SampleResultService"
+            android:exported="false"/>
     </application>
 
 </manifest>

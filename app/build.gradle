@@ -36,8 +36,8 @@ android {
         applicationId "andy.tinker"
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //使用multiDex库
@@ -46,8 +46,10 @@ android {
         signingConfig signingConfigs.config
         manifestPlaceholders = [TINKER_ID: "${getTinkerIdValue()}"]
 
-        buildConfigField "String", "MESSAGE", "\"I am the base apk\""
-        buildConfigField "String", "CLIENTVERSION", "\"${getTinkerIdValue()}\""
+        //buildConfigField 写入属性到 BuildConfig
+        buildConfigField "String", "MESSAGE", "\"${VERSION_MESSAGE}\""
+        buildConfigField "String", "TINKER_ID", "\"${getTinkerIdValue()}\""
+        //buildConfigField "String", "CLIENTVERSION", "\"${getTinkerIdValue()}\""
         buildConfigField "String", "PLATFORM", "\"all\""
     }
 
@@ -138,7 +140,7 @@ if (buildWithTinker()) {
      * 全局信息相关配置
      */
     tinkerPatch {
-        // 基准apk包的路径，必须输入，否则会报错。
+        // 基准apk包的路径，必须输入，否则会报错。 默认为null
         oldApk = getOldApkPath()
         /**
          * 如果出现以下的情况，并且ignoreWarning为false，我们将中断编译。
@@ -148,15 +150,17 @@ if (buildWithTinker()) {
          * case 3: 定义在dex.loader用于加载补丁的类不在main dex中;
          * case 4:  定义在dex.loader用于加载补丁的类出现修改；
          * case 5: resources.arsc改变，但没有使用applyResourceMapping编译。
+         * 可选，默认'false'
          */
         ignoreWarning = true
 
-        //运行过程中需要验证基准apk包与补丁包的签名是否一致，是否需要签名。
+        //运行过程中需要验证基准apk包与补丁包的签名是否一致，是否需要签名。可选，默认为“true”
         useSign = true
 
         /**
          * optional，default 'true'
          * whether use tinker to build
+         * 是否使用tinker构建
          */
         tinkerEnable = buildWithTinker()
 
@@ -275,7 +279,7 @@ if (buildWithTinker()) {
              * 在这里，你可以定义其他的信息，在运行时可以通过TinkerLoadResult.getPackageConfigByName得到相应的数值。
              * 但是建议直接通过修改代码来实现，例如BuildConfig。
              */
-            configField("patchMessage", "tinker is sample to use")
+            configField("patchMessage", "\"${VERSION_MESSAGE}\"")
             /**
              * just a sample case, you can use such as sdkVersion, brand, channel...
              * you can parse it in the SamplePatchListener.
@@ -285,7 +289,7 @@ if (buildWithTinker()) {
             /**
              * 配置patch补丁版本
              */
-            configField("patchVersion", "1.0")
+            configField("patchVersion", "\"${getTinkerIdValue()}-${PATCH_VERSION}\"")
         }
         /**
          * 7zip路径配置项，执行前提是useSign为true
